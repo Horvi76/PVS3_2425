@@ -8,6 +8,7 @@ import java.util.Random;
 
 public class Buttons extends JFrame implements ActionListener{
     JButton button;
+    JLabel label;
     public Buttons(){
         this.setSize(500,500);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -24,7 +25,16 @@ public class Buttons extends JFrame implements ActionListener{
         //xy souradnice pro umisteni
         this.setLayout(null);
         button.setBounds(0,0,250,100);
-        button.addActionListener(this);
+        button.addActionListener(e -> {
+            if (button.getText().equals("Hide")){
+                button.setText("Show");
+                label.setBackground(label.getForeground());
+            } else {
+                button.setText("Hide");
+                label.setBackground(Color.white);
+            }
+        });
+
 
         JButton anotherButton = new JButton("Do");
         anotherButton.setFont(new Font("Consolas", Font.BOLD,36));
@@ -45,7 +55,7 @@ public class Buttons extends JFrame implements ActionListener{
 //            System.out.println("Tlacitko: " + e.getSource());
 //        });
 
-        JLabel label = new JLabel("text");
+        label = new JLabel("text");
         label.setBounds(0, 100, 500, 400);
         label.setBackground(Color.white);
         label.setOpaque(true);
