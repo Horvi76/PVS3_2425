@@ -68,12 +68,19 @@ class Book implements Readable{
         this.pages = pages;
     }
 
+
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (! (obj instanceof  Book)) return false;
-        return this.IBM == ((Book) obj).IBM;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return IBM == book.IBM && Objects.equals(name, book.name) && Objects.equals(author, book.author) && Objects.equals(date, book.date) && Objects.equals(pages, book.pages);
     }
+
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(name, author, date, IBM, pages);
+//    }
 
     @Override
     public void read() {
