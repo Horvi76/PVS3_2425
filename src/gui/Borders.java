@@ -32,6 +32,16 @@ public class Borders extends JFrame {
         this.add(bluePanel, BorderLayout.EAST);
         this.add(greenPanel, BorderLayout.SOUTH);
         this.add(yellowPanel, BorderLayout.NORTH);
+
+        JButton rotate = new JButton("Rotate");
+        rotate.addActionListener(e -> {
+            Color c = redPanel.getBackground();
+            redPanel.setBackground(greenPanel.getBackground());
+            greenPanel.setBackground(bluePanel.getBackground());
+            bluePanel.setBackground(yellowPanel.getBackground());
+            yellowPanel.setBackground(c);
+        });
+        this.add(rotate, BorderLayout.CENTER);
     }
 
     public static void main(String[] args) {
