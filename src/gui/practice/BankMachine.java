@@ -17,25 +17,42 @@ class InputWindow extends JFrame {
         this.setLocationRelativeTo(null);
         this.setLayout(new FlowLayout());
 
-        JLabel temp = new JLabel();
-        temp.setPreferredSize(new Dimension(500, 100));
-        temp.setBackground(Color.blue);
-        temp.setOpaque(true);
+        JTextField input = new JTextField("Value");
+        input.setPreferredSize(new Dimension(500, 100));
+        input.setFont(new Font("Consolas", Font.BOLD, 32));
+        input.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JLabel alsoTemp = new JLabel();
 
-        alsoTemp.setPreferredSize(new Dimension(100, 100));
-        alsoTemp.setBackground(Color.red);
-        alsoTemp.setOpaque(true);
+        JButton inButton = new JButton("Go");
+        inButton.addActionListener(e -> {
+            try {
+                int number = Integer.parseInt(input.getText());
+                if (number <= 0){
+                    JOptionPane.showMessageDialog(null,"Zadejte kladne cislo");
+                } else {
+                   ResultWindow.getNominals(number);
+                }
+            } catch (NumberFormatException ex){
+                JOptionPane.showMessageDialog(null,"Zadejte cislo");
+            }
+        });
+        inButton.setPreferredSize(new Dimension(100, 100));
+        inButton.setFont(new Font("Consolas", Font.BOLD, 32));
 
-        this.add(temp);
-        this.add(alsoTemp);
+        this.add(input);
+        this.add(inButton);
 
         this.pack();
     }
 }
 
 class ResultWindow extends JFrame {
+
+
+    static void getNominals(int number){
+        //print
+        System.out.println();
+    }
     public ResultWindow() {
         this.setLayout(new BorderLayout());
         this.setLocationRelativeTo(null);
