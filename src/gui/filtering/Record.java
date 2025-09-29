@@ -18,4 +18,14 @@ public class Record {
     public String[] returnAsTableRow(){
         return new String[]{name, String.valueOf(yearOfRelease), String.valueOf(rating), String.valueOf(duration)};
     }
+
+    @Override
+    public String toString() {
+        return "Record{" +
+                "name='" + name + '\'' +
+                ", yearOfRelease=" + yearOfRelease +
+                ", duration=" + duration +
+                ", rating=" + rating +
+                '}';
+    }
 }
