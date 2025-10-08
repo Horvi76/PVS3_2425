@@ -53,6 +53,7 @@ public class MainMenu extends JFrame implements ActionListener{
                 }
 
                 status.setText(personData.size() + " records loaded! You can now view the dataset!");
+                dataLoad.setEnabled(false);
                 tableView.setEnabled(true);
                 dataView.setEnabled(true);
                 pack();

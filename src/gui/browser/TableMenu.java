@@ -10,7 +10,7 @@ public class TableMenu extends JFrame {
 
 
     TableMenu(){
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  //muze to zde byt?
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  //muze to zde byt?
         this.setSize(500, 600);
         this.setLayout(new BorderLayout());
         this.setResizable(false);
