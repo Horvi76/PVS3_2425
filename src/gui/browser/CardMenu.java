@@ -48,28 +48,31 @@ public class CardMenu extends JFrame {
         previous = new JButton("Previous");
         next = new JButton("Next");
         lowerMenu.add(previous);
-        previous.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //dalsi kod
-            }
+        previous.addActionListener(e -> {
+            cursor--;
+            reload();
         });
         lowerMenu.add(shoeSize);
         lowerMenu.add(salary);
         next.addActionListener(e -> {
             cursor++;
-            avatar = new ImageIcon(MainMenu.personData.get(cursor).avatar.getImage().getScaledInstance(500,450, Image.SCALE_DEFAULT));
-            fullName.setText("Full name: " + MainMenu.personData.get(cursor).name + " " + MainMenu.personData.get(cursor).surname);
-            fullName.setIcon(avatar);
-
-            shoeSize.setText("Shoe size: " + MainMenu.personData.get(cursor).shoeSize);
-            salary.setText("Salary: " + MainMenu.personData.get(cursor).salary);
+            reload();
         });
 
         lowerMenu.add(next);
 
         this.add(lowerMenu, BorderLayout.SOUTH);
         this.pack();
+    }
+
+
+    void reload(){
+        avatar = new ImageIcon(MainMenu.personData.get(cursor).avatar.getImage().getScaledInstance(500,450, Image.SCALE_DEFAULT));
+        fullName.setText("Full name: " + MainMenu.personData.get(cursor).name + " " + MainMenu.personData.get(cursor).surname);
+        fullName.setIcon(avatar);
+
+        shoeSize.setText("Shoe size: " + MainMenu.personData.get(cursor).shoeSize);
+        salary.setText("Salary: " + MainMenu.personData.get(cursor).salary);
     }
 
 }
