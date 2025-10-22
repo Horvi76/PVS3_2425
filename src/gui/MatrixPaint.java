@@ -38,9 +38,18 @@ public class MatrixPaint extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 button.setText("Painting...");
                 button.setEnabled(false);
-                for (int i = 0; i < MATRIX_DIMENSION; i++) {
-                    for (int j = 0; j < MATRIX_DIMENSION; j++) {
-                        labels[i][j].setBackground(Color.blue);
+                button.paintImmediately(0,0, getWidth(), getHeight());
+                for (int i = MATRIX_DIMENSION - 1; i >= 0; i--) {
+                    for (int j = MATRIX_DIMENSION - 1; j >= 0; j--) {
+                        try {
+                            Thread.sleep(100);
+                            labels[i][j].setBackground(Color.blue);
+
+
+                            matrixCanvas.paintImmediately(0,0, getWidth(), getHeight());
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 }
             }
