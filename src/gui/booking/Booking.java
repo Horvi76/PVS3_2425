@@ -86,7 +86,34 @@ public class Booking extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                StringBuilder sb = new StringBuilder("Following errors:\n");
+                if (nameField.getText().isEmpty()) sb.append("-Name field cannot be empty!\n");
+                if (phoneField.getText().isEmpty()) sb.append("-Phone field cannot be empty!\n");
 
+                //pouze cisla, 9 znaku
+                String phoneFieldVal = phoneField.getText();
+                if (phoneFieldVal.length() == 9){
+                    for (int i = 0; i < phoneFieldVal.length(); i++) {
+                          if (!Character.isDigit(phoneFieldVal.charAt(i))){
+                              sb.append("-Phone number must be 9 digits\n");
+                              break;
+                          }
+                    }
+                } else {
+                    sb.append("-Phone number must be 9 digits\n");
+                }
+
+                //student, co ale nechce do mest
+                if (discountCheckBox.isSelected() && (!cityOption.isSelected())) sb.append("-Students can only book city destinations\n");
+
+                //plaz max 60 dni vcetne
+                if (beachOption.isSelected() && daysSlider.getValue() > 60) sb.append("-Beach vacations can be booked for 60 days tops.\n");
+
+                if (sb.toString().split("\n").length > 1){
+                    JOptionPane.showMessageDialog(null, sb.toString(), "Error",JOptionPane.WARNING_MESSAGE);
+                } else{
+                    JOptionPane.showMessageDialog(null, "All good", ":)",JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         });
 
@@ -103,7 +130,6 @@ public class Booking extends JFrame {
     }
 
     public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-
         new Booking().setVisible(true);
     }
 }
