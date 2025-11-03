@@ -5,6 +5,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutorService;
 
 public class MatrixPaint extends JFrame {
     JLabel[][] labels;
@@ -38,14 +39,21 @@ public class MatrixPaint extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 button.setText("Painting...");
                 button.setEnabled(false);
-                //button.paintImmediately(0, 0, getWidth(), getHeight());
-                for (int i = 0; i  < MATRIX_DIMENSION; i++) {
-                    for (int j = 0; j < MATRIX_DIMENSION; j++) {
+                button.paintImmediately(0, 0, getWidth(), getHeight());
+                for (int i = MATRIX_DIMENSION - 1; i  >= 0; i--) {
+                    for (int j = MATRIX_DIMENSION - 1; j  >= 0; j--) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         labels[i][j].setBackground(Color.blue);
+                        labels[i][j].paintImmediately(0, 0, getWidth(), getHeight());
                     }
                 }
             }
         });
+
         this.pack();
     }
 
