@@ -49,6 +49,7 @@ public class Booking extends JFrame {
         JRadioButton mountainOption = new JRadioButton("Mountains");
         mountainOption.setFont(new Font("Consolas", Font.PLAIN, 12));
         JRadioButton cityOption = new JRadioButton("City");
+        cityOption.setSelected(true);
         cityOption.setFont(new Font("Consolas", Font.PLAIN, 12));
         ButtonGroup optionsGroup = new ButtonGroup();
         optionsGroup.add(beachOption);
@@ -83,11 +84,34 @@ public class Booking extends JFrame {
         buttonPanel.add(cancelButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        submitButton.addActionListener(new ActionListener() {
+        submitButton.addActionListener(e -> {
+            StringBuilder errors = new StringBuilder();
+            if (nameField.getText().isEmpty()) {
+                errors.append("- Name field cannot be empty.\n");
+            }
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            if (phoneField.getText().length() != 9) {
+                errors.append("- Phone number must be 9 digits long.\n");
+            } else {
+                for (int i = 0; i < phoneField.getText().length(); i++) {
+                    if (!Character.isDigit(phoneField.getText().charAt(i))) {
+                        errors.append("- Only digits allowed for phone number field.\n");
+                        break;
+                    }
+                }
+            }
+            if (discountCheckBox.isSelected() && !cityOption.isSelected()) {
+                errors.append("- You can only submit reservation for a city using students' discount.\n");
+            }
 
+            if (beachOption.isSelected() && daysSlider.getValue() > 60){
+                errors.append("- Beach options allow only 60 days reservation.\n");
+            }
+
+            if (!errors.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Following errors occurred:\n" + errors, "Errors", JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Ok", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
