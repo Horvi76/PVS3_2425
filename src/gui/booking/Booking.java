@@ -9,7 +9,7 @@ public class Booking extends JFrame {
     public Booking() {
         setTitle("Booking Form");
         setSize(500, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
         JLabel headerLabel = new JLabel("GetAway", JLabel.CENTER);
@@ -77,11 +77,11 @@ public class Booking extends JFrame {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         JButton submitButton = new JButton("Submit");
         submitButton.setFont(new Font("Consolas", Font.BOLD, 14));
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.setFont(new Font("Consolas", Font.BOLD, 14));
+        JButton clearButton = new JButton("Clear");
+        clearButton.setFont(new Font("Consolas", Font.BOLD, 14));
 
         buttonPanel.add(submitButton);
-        buttonPanel.add(cancelButton);
+        buttonPanel.add(clearButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
         submitButton.addActionListener(e -> {
@@ -101,7 +101,7 @@ public class Booking extends JFrame {
                 }
             }
             if (discountCheckBox.isSelected() && !cityOption.isSelected()) {
-                errors.append("- You can only submit reservation for a city using students' discount.\n");
+                errors.append("- You can only submit reservation for a city using student's discount.\n");
             }
 
             if (beachOption.isSelected() && daysSlider.getValue() > 60){
@@ -115,7 +115,7 @@ public class Booking extends JFrame {
             }
         });
 
-        cancelButton.addActionListener(new ActionListener() {
+        clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 nameField.setText("");
