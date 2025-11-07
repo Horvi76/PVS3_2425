@@ -6,6 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Booking extends JFrame {
+
+    JRadioButton beachOption, cityOption, mountainsOption;
+
     public Booking() {
         setTitle("Booking Form");
         setSize(500, 400);
@@ -44,19 +47,19 @@ public class Booking extends JFrame {
         JLabel optionsLabel = new JLabel("Choose Your Destination:");
         optionsLabel.setFont(new Font("Consolas", Font.PLAIN, 14));
         JPanel optionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JRadioButton beachOption = new JRadioButton("Beach");
+        beachOption = new JRadioButton("Beach");
         beachOption.setFont(new Font("Consolas", Font.PLAIN, 12));
-        JRadioButton mountainOption = new JRadioButton("Mountains");
-        mountainOption.setFont(new Font("Consolas", Font.PLAIN, 12));
-        JRadioButton cityOption = new JRadioButton("City");
+        mountainsOption = new JRadioButton("Mountains");
+        mountainsOption.setFont(new Font("Consolas", Font.PLAIN, 12));
+        cityOption = new JRadioButton("City");
         cityOption.setSelected(true);
         cityOption.setFont(new Font("Consolas", Font.PLAIN, 12));
         ButtonGroup optionsGroup = new ButtonGroup();
         optionsGroup.add(beachOption);
-        optionsGroup.add(mountainOption);
+        optionsGroup.add(mountainsOption);
         optionsGroup.add(cityOption);
         optionsPanel.add(beachOption);
-        optionsPanel.add(mountainOption);
+        optionsPanel.add(mountainsOption);
         optionsPanel.add(cityOption);
         formPanel.add(optionsLabel);
         formPanel.add(optionsPanel);
@@ -79,7 +82,6 @@ public class Booking extends JFrame {
         submitButton.setFont(new Font("Consolas", Font.BOLD, 14));
         JButton clearButton = new JButton("Clear");
         clearButton.setFont(new Font("Consolas", Font.BOLD, 14));
-
         buttonPanel.add(submitButton);
         buttonPanel.add(clearButton);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -111,7 +113,17 @@ public class Booking extends JFrame {
             if (!errors.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Following errors occurred:\n" + errors, "Errors", JOptionPane.ERROR_MESSAGE);
             } else {
+                Vacation vacation = new Vacation(
+                        nameField.getText(),
+                        phoneField.getText(),
+                        getDestinationCode(),
+                        daysSlider.getValue(),
+                        discountCheckBox.isSelected()
+                );
+                MainMenu.model.addRow(vacation.getTableRow());
+                MainMenu.data.add(vacation);
                 JOptionPane.showMessageDialog(null, "Ok", "Info", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
             }
         });
 
@@ -125,6 +137,16 @@ public class Booking extends JFrame {
                 daysSlider.setValue(0);
             }
         });
+    }
+
+    int getDestinationCode(){
+        if (beachOption.isSelected()){
+            return 0;
+        } else if (mountainsOption.isSelected()) {
+            return 2;
+        } else {
+            return 1;
+        }
     }
 
     public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
