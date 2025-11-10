@@ -4,14 +4,46 @@ import javax.print.attribute.standard.Destination;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 
 public class MainMenu extends JFrame {
 
     static final Font DEAFULT_FONT = new Font("Consolas", Font.BOLD, 18);
     static final Font DEAFULT_BUTTON_FONT = new Font("Consolas", Font.BOLD, 14);
+    public static final String LOAD_FILE_PATH = "VacSave.ser";
     public static DefaultTableModel model;
-    public static ArrayList<Vacation> data = new ArrayList<>();
+
+
+    public static ArrayList<Vacation> data;
+
+    /**
+     * Refresh tabulky pro GUI ucely.
+     * - deserializace souboru
+     * - nacist data do
+     */
+    void displayData() {
+        if (new File(LOAD_FILE_PATH).isFile()) {
+            try {
+                ObjectInputStream loader = new ObjectInputStream(new FileInputStream(LOAD_FILE_PATH));
+                data = (ArrayList<Vacation>) loader.readObject();
+                loader.close();
+                //vycisti tabulku
+                model.setRowCount(0);
+                for (Vacation v : data){
+                    model.addRow(v.getTableRow());
+                }
+            } catch (IOException e) {
+                System.out.println("Trouble loading the initial save file: " + e.getMessage());
+            } catch (ClassNotFoundException e) {
+                System.out.println("No 'Vacation' class found, check your files: " + e.getMessage());
+            }
+        } else {
+            data = new ArrayList<>();
+            System.out.println("No initial data file loaded.");
+        }
+    }
+
     public MainMenu() {
         setLocationRelativeTo(null);
         setTitle("Vacation manager");
@@ -30,10 +62,6 @@ public class MainMenu extends JFrame {
         model = new DefaultTableModel(headers, 0);
         JTable table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
-        //testing
-        Vacation tester = new Vacation("Tester", "111222879", 2, 31, false);
-        data.add(tester);
-        model.addRow(tester.getTableRow());
         //south
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         JButton inputButton = new JButton("New application");
@@ -41,6 +69,27 @@ public class MainMenu extends JFrame {
             new Booking().setVisible(true);
         });
         JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(e -> {
+            //serializace ven:
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(LOAD_FILE_PATH));
+                oos.writeObject(data);
+                oos.close();
+                JOptionPane.showMessageDialog(this, "Save file created", "Info", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                System.out.println("Trouble writing out the file :(");
+            }
+
+        });
+        JButton detailButton = new JButton("Detail");
+        detailButton.addActionListener(e -> {
+            new ReadView(data.get(table.getSelectedRow())).setVisible(true);
+        });
+        saveButton.setFont(DEAFULT_BUTTON_FONT);
+        inputButton.setFont(DEAFULT_BUTTON_FONT);
+        detailButton.setFont(DEAFULT_BUTTON_FONT);
+        buttonsPanel.add(detailButton);
         buttonsPanel.add(inputButton);
         buttonsPanel.add(saveButton);
 
@@ -51,7 +100,10 @@ public class MainMenu extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
         //south
         add(buttonsPanel, BorderLayout.SOUTH);
+
+        displayData();
     }
+
 
     public static void main(String[] args) {
         new MainMenu().setVisible(true);

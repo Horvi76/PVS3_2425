@@ -1,10 +1,15 @@
 package gui.booking;
 
-public class Vacation {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class Vacation implements Serializable {
     String applicant, phoneNum;
     Destinations dest;
     int days;
     boolean discount;
+    @Serial
+    private static final long serialVersionUID = 42L;
 
     public Vacation(String applicant, String phoneNum, int destOption, int days, boolean discount) {
         this.applicant = applicant;
@@ -22,6 +27,16 @@ public class Vacation {
                 String.valueOf(days),
                 discount ? "Yes" : "No"
         };
+    }
+
+    @Override
+    public String toString() {
+        return "applicant='" + applicant + '\'' +
+                ", phoneNum='" + phoneNum + '\'' +
+                ", dest=" + dest +
+                ", days=" + days +
+                ", discount=" + discount +
+                '}';
     }
 }
 enum Destinations{
