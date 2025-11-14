@@ -11,6 +11,7 @@ public class MainMenu extends JFrame {
     static final Font DEAFULT_FONT = new Font("Consolas", Font.BOLD, 18);
     static final Font DEAFULT_BUTTON_FONT = new Font("Consolas", Font.BOLD, 14);
     public static final String LOAD_FILE_PATH = "VacSave.ser";
+    public static JTable table;
     public static DefaultTableModel model;
 
 
@@ -59,13 +60,13 @@ public class MainMenu extends JFrame {
         //CENTER - table only
         String[] headers = {"Name", "Phone num.", "Destination", "Days", "Discounted"};
         model = new DefaultTableModel(headers, 0);
-        JTable table = new JTable(model);
+        table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
         //south
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         JButton inputButton = new JButton("New application");
         inputButton.addActionListener(e -> {
-            new Booking().setVisible(true);
+            new Booking(null).setVisible(true);
         });
         JButton saveButton = new JButton("Save");
         saveButton.addActionListener(e -> {
@@ -93,9 +94,12 @@ public class MainMenu extends JFrame {
                 data.remove(table.getSelectedRow());
                 model.removeRow(table.getSelectedRow());
                 //uz neni nutne:
-                //table.remove(table.getSelectedRow());
+//                table.remove(table.getSelectedRow());
             }
         });
+        JButton editButton = new JButton("Edit");
+        // TODO: 14.11.2025 ACTION LIstener 
+        editButton.setFont(DEAFULT_BUTTON_FONT);
         deleteButton.setFont(DEAFULT_BUTTON_FONT);
         saveButton.setFont(DEAFULT_BUTTON_FONT);
         inputButton.setFont(DEAFULT_BUTTON_FONT);
@@ -104,7 +108,7 @@ public class MainMenu extends JFrame {
         buttonsPanel.add(inputButton);
         buttonsPanel.add(deleteButton);
         buttonsPanel.add(saveButton);
-
+        
         //add sekce
         //north
         add(headerLabel, BorderLayout.NORTH);

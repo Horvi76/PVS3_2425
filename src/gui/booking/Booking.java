@@ -1,5 +1,7 @@
 package gui.booking;
 
+import com.sun.tools.javac.Main;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,7 +11,7 @@ public class Booking extends JFrame {
 
     JRadioButton beachOption, cityOption, mountainsOption;
 
-    public Booking() {
+    public Booking(Vacation vacation) {
         setTitle("Booking Form");
         setSize(500, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -78,6 +80,18 @@ public class Booking extends JFrame {
         add(formPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        if (vacation != null) {
+            //data load
+            nameField.setText(vacation.applicant);
+            phoneField.setText(vacation.phoneNum);
+            discountCheckBox.setSelected(vacation.discount);
+            switch (vacation.dest) {
+                case CITY -> cityOption.setSelected(true);
+                case MOUNTAINS -> mountainsOption.setSelected(true);
+                case BEACH -> beachOption.setSelected(true);
+            }
+            daysSlider.setValue(vacation.days);
+        }
         JButton submitButton = new JButton("Submit");
         submitButton.setFont(new Font("Consolas", Font.BOLD, 14));
         JButton clearButton = new JButton("Clear");
@@ -106,22 +120,35 @@ public class Booking extends JFrame {
                 errors.append("- You can only submit reservation for a city using student's discount.\n");
             }
 
-            if (beachOption.isSelected() && daysSlider.getValue() > 60){
+            if (beachOption.isSelected() && daysSlider.getValue() > 60) {
                 errors.append("- Beach options allow only 60 days reservation.\n");
             }
 
             if (!errors.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Following errors occurred:\n" + errors, "Errors", JOptionPane.ERROR_MESSAGE);
             } else {
-                Vacation vacation = new Vacation(
-                        nameField.getText(),
-                        phoneField.getText(),
-                        getDestinationCode(),
-                        daysSlider.getValue(),
-                        discountCheckBox.isSelected()
-                );
-                MainMenu.model.addRow(vacation.getTableRow());
-                MainMenu.data.add(vacation);
+                if (vacation != null) {
+                    //propis edity - data
+                    vacation.dest = Destinations.getDestByCode(getDestinationCode());
+                    vacation.applicant = nameField.getText();
+                    vacation.phoneNum = phoneField.getText();
+                    vacation.discount = discountCheckBox.isSelected();
+                    vacation.days = daysSlider.getValue();
+
+                    //propsat edity - table
+                    MainMenu.model.removeRow(MainMenu.table.getSelectedRow());
+                    MainMenu.model.addRow(vacation.getTableRow());
+                } else {
+                    Vacation v = new Vacation(
+                            nameField.getText(),
+                            phoneField.getText(),
+                            getDestinationCode(),
+                            daysSlider.getValue(),
+                            discountCheckBox.isSelected()
+                    );
+                    MainMenu.model.addRow(v.getTableRow());
+                    MainMenu.data.add(v);
+                }
                 JOptionPane.showMessageDialog(null, "Ok", "Info", JOptionPane.INFORMATION_MESSAGE);
                 dispose();
             }
@@ -139,8 +166,8 @@ public class Booking extends JFrame {
         });
     }
 
-    int getDestinationCode(){
-        if (beachOption.isSelected()){
+    int getDestinationCode() {
+        if (beachOption.isSelected()) {
             return 0;
         } else if (mountainsOption.isSelected()) {
             return 2;
@@ -150,6 +177,6 @@ public class Booking extends JFrame {
     }
 
     public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        new Booking().setVisible(true);
+        new Booking(null).setVisible(true);
     }
 }
