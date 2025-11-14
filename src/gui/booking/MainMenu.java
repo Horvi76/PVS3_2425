@@ -1,6 +1,5 @@
 package gui.booking;
 
-import javax.print.attribute.standard.Destination;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -86,11 +85,24 @@ public class MainMenu extends JFrame {
         detailButton.addActionListener(e -> {
             new ReadView(data.get(table.getSelectedRow())).setVisible(true);
         });
+
+        JButton deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(a -> {
+            int input = JOptionPane.showConfirmDialog(null, "Do you wish to delete selected record?", "Delete record", JOptionPane.YES_NO_OPTION);
+            if (input == JOptionPane.YES_OPTION){
+                data.remove(table.getSelectedRow());
+                model.removeRow(table.getSelectedRow());
+                //uz neni nutne:
+                //table.remove(table.getSelectedRow());
+            }
+        });
+        deleteButton.setFont(DEAFULT_BUTTON_FONT);
         saveButton.setFont(DEAFULT_BUTTON_FONT);
         inputButton.setFont(DEAFULT_BUTTON_FONT);
         detailButton.setFont(DEAFULT_BUTTON_FONT);
         buttonsPanel.add(detailButton);
         buttonsPanel.add(inputButton);
+        buttonsPanel.add(deleteButton);
         buttonsPanel.add(saveButton);
 
         //add sekce
