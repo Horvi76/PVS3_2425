@@ -98,7 +98,12 @@ public class MainMenu extends JFrame {
             }
         });
         JButton editButton = new JButton("Edit");
-        // TODO: 14.11.2025 ACTION LIstener 
+        editButton.addActionListener(e -> {
+            if (table.getSelectedRow() == -1){
+                JOptionPane.showMessageDialog(null, "No row is selected for editing", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            new Booking(data.get(table.getSelectedRow())).setVisible(true);
+        });
         editButton.setFont(DEAFULT_BUTTON_FONT);
         deleteButton.setFont(DEAFULT_BUTTON_FONT);
         saveButton.setFont(DEAFULT_BUTTON_FONT);
@@ -107,6 +112,7 @@ public class MainMenu extends JFrame {
         buttonsPanel.add(detailButton);
         buttonsPanel.add(inputButton);
         buttonsPanel.add(deleteButton);
+        buttonsPanel.add(editButton);
         buttonsPanel.add(saveButton);
         
         //add sekce
