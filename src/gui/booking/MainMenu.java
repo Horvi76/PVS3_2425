@@ -1,5 +1,8 @@
 package gui.booking;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -127,7 +130,10 @@ public class MainMenu extends JFrame {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedLookAndFeelException {
+        FlatLightLaf.setup();
+
+        UIManager.setLookAndFeel(new FlatLightLaf());
         new MainMenu().setVisible(true);
     }
 }
