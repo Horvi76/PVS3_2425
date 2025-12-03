@@ -2,10 +2,13 @@ package exams;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BloodTest extends JFrame {
 
@@ -24,7 +27,7 @@ public class BloodTest extends JFrame {
         });
 
         JButton reserveButton = new JButton("New reservation");
-
+        reserveButton.addActionListener(e -> new DonationForm().setVisible(true));
         donations.add(new Donation("Tester", "Male", false, LocalDate.now().minusMonths(2)));
 
         add(listButton);
@@ -104,8 +107,99 @@ class DonationForm extends JFrame {
     //pokud zena: alespon 120 dni od mezi darovanim
     //pokud muz: alespon 90 dni mezi darovanim
 
+    private final JTextField nameField = new JTextField(20);
+    private final JRadioButton maleRadio = new JRadioButton("Male");
+    private final JRadioButton femaleRadio = new JRadioButton("Female");
+    private final JCheckBox firstTimeCheckBox = new JCheckBox("First-time donor");
+    private final JTextField dateField = new JTextField(10);
+
+
+
+    DonationForm(){
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        //obecny formular
+        setLayout(new BorderLayout(10, 10));
+
+        //vnitrek formu
+        JPanel formPanel = new JPanel(new GridLayout(4,2,5,5));
+        //Name
+        formPanel.add(new JLabel("Full name:"));
+        formPanel.add(nameField);
+        // Gender
+        formPanel.add(new JLabel("Gender:"));
+        JPanel genderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        ButtonGroup group = new ButtonGroup();
+        group.add(maleRadio);
+        group.add(femaleRadio);
+        genderPanel.add(maleRadio);
+        genderPanel.add(femaleRadio);
+        formPanel.add(genderPanel);
+        // First-time
+        formPanel.add(new JLabel("First-time donor:"));
+        formPanel.add(firstTimeCheckBox);
+        // Date
+        formPanel.add(new JLabel("Date (dd-MM-yyyy):"));
+        formPanel.add(dateField);
+        add(formPanel, BorderLayout.CENTER);
+
+        //buttons na pridani/cancel
+        // Buttons
+        JButton okButton = new JButton("OK");
+        JButton cancelButton = new JButton("Cancel");
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.add(okButton);
+        buttonsPanel.add(cancelButton);
+
+        okButton.addActionListener(e -> {
+            if (tryReservation()){
+                JOptionPane.showMessageDialog(null, "Ok", "Info", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+            }
+        });
+        cancelButton.addActionListener(e -> dispose());
+
+        add(buttonsPanel, BorderLayout.SOUTH);
+        pack();
+    }
+
+    boolean tryReservation(){
+        Donation donation = getDonation();
+        if(donation == null) return false;
+
+        List<Donation> filtered = BloodTest.donations.stream()
+                .filter(d -> d.getName().equals(donation.getName()))
+                .toList();
+        if (filtered.isEmpty()){
+            BloodTest.donations.add(donation);
+            return true;
+        }
+
+        for (Donation checkAgainst : filtered){
+            long daysBetween = ChronoUnit.DAYS.between(checkAgainst.getDate(), donation.getDate());
+            if (donation.getGender().equals("Female") && daysBetween < 120){
+                JOptionPane.showMessageDialog(null, "Zena musi mit 120 dni mezi darovanim, u vas je " + daysBetween, "Errors", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            if (donation.getGender().equals("Male") && daysBetween < 90){
+                JOptionPane.showMessageDialog(null, "Muz musi mit 90 dni mezi darovanim, u vas je " + daysBetween, "Errors", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+        BloodTest.donations.add(donation);
+        return true;
+    }
+
     Donation getDonation() {
-        return null;
+        if (nameField.getText().isEmpty() || dateField.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Date and name fields cannot be empty", "Errors", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+        LocalDate date = parseDate(dateField.getText());
+        if (date == null)
+            return null;
+        String gender = maleRadio.isSelected() ? "Male" : "Female";
+        return new Donation(nameField.getText(), gender, firstTimeCheckBox.isSelected(), parseDate(dateField.getText()));
     }
 
     public static LocalDate parseDate(String text) {
@@ -114,7 +208,8 @@ class DonationForm extends JFrame {
         try {
             return LocalDate.parse(text, formatter);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Ma byt: dd-MM-yyyy, je: " + text);
+            JOptionPane.showMessageDialog(null, "Ma byt: dd-MM-yyyy, je: " + text, "Errors", JOptionPane.ERROR_MESSAGE);
+            return null;
         }
     }
 
