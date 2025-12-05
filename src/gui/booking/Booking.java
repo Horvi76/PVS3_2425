@@ -1,15 +1,20 @@
 package gui.booking;
 
+import com.sun.tools.javac.Main;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Booking extends JFrame {
-    public Booking() {
+
+    JRadioButton beachOption, cityOption, mountainsOption;
+
+    public Booking(Vacation vacation) {
         setTitle("Booking Form");
         setSize(500, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
         JLabel headerLabel = new JLabel("GetAway", JLabel.CENTER);
@@ -44,18 +49,19 @@ public class Booking extends JFrame {
         JLabel optionsLabel = new JLabel("Choose Your Destination:");
         optionsLabel.setFont(new Font("Consolas", Font.PLAIN, 14));
         JPanel optionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JRadioButton beachOption = new JRadioButton("Beach");
+        beachOption = new JRadioButton("Beach");
         beachOption.setFont(new Font("Consolas", Font.PLAIN, 12));
-        JRadioButton mountainOption = new JRadioButton("Mountains");
-        mountainOption.setFont(new Font("Consolas", Font.PLAIN, 12));
-        JRadioButton cityOption = new JRadioButton("City");
+        mountainsOption = new JRadioButton("Mountains");
+        mountainsOption.setFont(new Font("Consolas", Font.PLAIN, 12));
+        cityOption = new JRadioButton("City");
+        cityOption.setSelected(true);
         cityOption.setFont(new Font("Consolas", Font.PLAIN, 12));
         ButtonGroup optionsGroup = new ButtonGroup();
         optionsGroup.add(beachOption);
-        optionsGroup.add(mountainOption);
+        optionsGroup.add(mountainsOption);
         optionsGroup.add(cityOption);
         optionsPanel.add(beachOption);
-        optionsPanel.add(mountainOption);
+        optionsPanel.add(mountainsOption);
         optionsPanel.add(cityOption);
         formPanel.add(optionsLabel);
         formPanel.add(optionsPanel);
@@ -74,23 +80,81 @@ public class Booking extends JFrame {
         add(formPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        if (vacation != null) {
+            //data load
+            nameField.setText(vacation.applicant);
+            phoneField.setText(vacation.phoneNum);
+            discountCheckBox.setSelected(vacation.discount);
+            switch (vacation.dest) {
+                case CITY -> cityOption.setSelected(true);
+                case MOUNTAINS -> mountainsOption.setSelected(true);
+                case BEACH -> beachOption.setSelected(true);
+            }
+            daysSlider.setValue(vacation.days);
+        }
         JButton submitButton = new JButton("Submit");
         submitButton.setFont(new Font("Consolas", Font.BOLD, 14));
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.setFont(new Font("Consolas", Font.BOLD, 14));
-
+        JButton clearButton = new JButton("Clear");
+        clearButton.setFont(new Font("Consolas", Font.BOLD, 14));
         buttonPanel.add(submitButton);
-        buttonPanel.add(cancelButton);
+        buttonPanel.add(clearButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        submitButton.addActionListener(e -> {
+            StringBuilder errors = new StringBuilder();
+            if (nameField.getText().isEmpty()) {
+                errors.append("- Name field cannot be empty.\n");
+            }
 
+            if (phoneField.getText().length() != 9) {
+                errors.append("- Phone number must be 9 digits long.\n");
+            } else {
+                for (int i = 0; i < phoneField.getText().length(); i++) {
+                    if (!Character.isDigit(phoneField.getText().charAt(i))) {
+                        errors.append("- Only digits allowed for phone number field.\n");
+                        break;
+                    }
+                }
+            }
+            if (discountCheckBox.isSelected() && !cityOption.isSelected()) {
+                errors.append("- You can only submit reservation for a city using student's discount.\n");
+            }
+
+            if (beachOption.isSelected() && daysSlider.getValue() > 60) {
+                errors.append("- Beach options allow only 60 days reservation.\n");
+            }
+
+            if (!errors.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Following errors occurred:\n" + errors, "Errors", JOptionPane.ERROR_MESSAGE);
+            } else {
+                if (vacation != null) {
+                    //propis edity - data
+                    vacation.dest = Destinations.getDestByCode(getDestinationCode());
+                    vacation.applicant = nameField.getText();
+                    vacation.phoneNum = phoneField.getText();
+                    vacation.discount = discountCheckBox.isSelected();
+                    vacation.days = daysSlider.getValue();
+
+                    //propsat edity - table
+                    MainMenu.model.removeRow(MainMenu.table.getSelectedRow());
+                    MainMenu.model.addRow(vacation.getTableRow());
+                } else {
+                    Vacation v = new Vacation(
+                            nameField.getText(),
+                            phoneField.getText(),
+                            getDestinationCode(),
+                            daysSlider.getValue(),
+                            discountCheckBox.isSelected()
+                    );
+                    MainMenu.model.addRow(v.getTableRow());
+                    MainMenu.data.add(v);
+                }
+                JOptionPane.showMessageDialog(null, "Ok", "Info", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
             }
         });
 
-        cancelButton.addActionListener(new ActionListener() {
+        clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 nameField.setText("");
@@ -102,8 +166,17 @@ public class Booking extends JFrame {
         });
     }
 
-    public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    int getDestinationCode() {
+        if (beachOption.isSelected()) {
+            return 0;
+        } else if (mountainsOption.isSelected()) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
 
-        new Booking().setVisible(true);
+    public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        new Booking(null).setVisible(true);
     }
 }

@@ -5,13 +5,14 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutorService;
 
 public class MatrixPaint extends JFrame {
     JLabel[][] labels;
     final static int MATRIX_DIMENSION = 10;
     JButton button;
 
-    MatrixPaint(){
+    MatrixPaint() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
         JPanel matrixCanvas = new JPanel();
@@ -38,23 +39,22 @@ public class MatrixPaint extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 button.setText("Painting...");
                 button.setEnabled(false);
-                button.paintImmediately(0,0, getWidth(), getHeight());
-                for (int i = MATRIX_DIMENSION - 1; i >= 0; i--) {
-                    for (int j = MATRIX_DIMENSION - 1; j >= 0; j--) {
+                button.paintImmediately(0, 0, getWidth(), getHeight());
+                for (int i = MATRIX_DIMENSION - 1; i  >= 0; i--) {
+                    for (int j = MATRIX_DIMENSION - 1; j  >= 0; j--) {
                         try {
                             Thread.sleep(100);
-                            labels[i][j].setBackground(Color.blue);
-
-
-                            matrixCanvas.paintImmediately(0,0, getWidth(), getHeight());
                         } catch (InterruptedException ex) {
                             throw new RuntimeException(ex);
                         }
+                        labels[i][j].setBackground(Color.blue);
+                        labels[i][j].paintImmediately(0, 0, getWidth(), getHeight());
                     }
                 }
             }
         });
-       this.pack();
+
+        this.pack();
     }
 
     public static void main(String[] args) {

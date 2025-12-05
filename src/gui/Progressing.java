@@ -1,51 +1,44 @@
 package gui;
 
-import com.formdev.flatlaf.FlatLightLaf;
-
 import javax.swing.*;
 import java.awt.*;
 
-public class ProgressDemo extends JFrame {
+public class Progressing extends JFrame {
 
     JProgressBar bar;
 
-    public ProgressDemo(){
+    public Progressing(){
+        setSize(420, 420);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(760, 420);
         setLayout(null);
-
-
+        setLocationRelativeTo(null);
         bar = new JProgressBar();
-        bar.setFont(new Font("MV Boli", Font.BOLD, 32));
-        bar.setForeground(Color.green);
+        bar.setFont(new Font("Consolas", Font.BOLD, 25));
+        bar.setForeground(Color.magenta);
         bar.setBackground(Color.black);
+        bar.setBounds(0,0, getWidth(), 50);
         bar.setStringPainted(true);
-        bar.setBounds(0,0,760,210);
         bar.setValue(0);
-        this.add(bar);
 
-//        fill();
+        add(bar);
     }
 
-    void fill(){
+    public void fill(){
         int counter = 0;
         while (counter <= 100){
-            bar.setValue(counter);
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            counter+=1;
+            counter++;
+            bar.setValue(counter);
         }
-
         bar.setString("Done!");
     }
 
-    public static void main(String[] args) throws UnsupportedLookAndFeelException {
-//        FlatLightLaf.setup();
-//        UIManager.setLookAndFeel(new FlatLightLaf());
-        ProgressDemo demo = new ProgressDemo();
+    public static void main(String[] args) {
+        Progressing demo = new Progressing();
         demo.setVisible(true);
         demo.fill();
     }
