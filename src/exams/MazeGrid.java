@@ -36,7 +36,7 @@ public class MazeGrid extends JFrame implements KeyListener {
     private JPanel gridPanel;
     private JLabel[][] cellLabels;
 
-    public MazeGridAssignment() {
+    public MazeGrid() {
         super("Maze Game (Grid) - Assignment");
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
