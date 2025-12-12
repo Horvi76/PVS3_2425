@@ -5,14 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class CoordsRead {
-    static List<Coordinates> all = new ArrayList<>();
 
+    static List<Coordinates> all = Collections.synchronizedList(new ArrayList<>());
     static void processOneFile(String fileName) throws IOException {
         String line;
         String[] attributes;
@@ -33,7 +34,7 @@ public class CoordsRead {
 //            processOneFile(basename + i + ".txt");
 //        }
 
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        ExecutorService executorService = Executors.newFixedThreadPool(50);
         for (int i = 0; i < amount; i++) {
             int fileIndex = i;
             executorService.submit(() -> {
