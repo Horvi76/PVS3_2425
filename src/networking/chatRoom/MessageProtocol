@@ -1,0 +1,25 @@
+(identita clienta = ID od serveru)
+
+State 1 : server ceka
+
+State 2: client handle:
+varA: Client se napojuje
+1. client se napoji na server
+2. Server posila unique ID pro clienta
+    -drzi vuci client-socketu
+
+varB: Client jiz napojen (Lobby):
+/create <RoomName>
+    ...check na jedinecnost
+/join <RoomName>
+    ...check na existenci room
+/list
+    server navrati nazvy jednotlivych Rooms
+
+State 3: In-room chat
+/msg <text>
+    ...musi byt stanovena maximalni delka textu
+        ...Buffer ma limity
+/leave
+    ...presun do lobby
+
