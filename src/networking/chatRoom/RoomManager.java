@@ -53,10 +53,10 @@ public class RoomManager {
     public String getCurrentRoom(ClientHandler client){
         return membership.get(client).getName();
     }
-
-    public void leaveToLobby(ClientHandler client){
-        joinRoom(client, LOBBY_ROOM_NAME);
-    }
+//
+//    public void leaveToLobby(ClientHandler client){
+//        joinRoom(client, LOBBY_ROOM_NAME);
+//    }
 
     public void joinLobby(ClientHandler client){
         membership.put(client, lobby);

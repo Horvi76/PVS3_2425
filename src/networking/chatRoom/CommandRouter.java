@@ -5,9 +5,7 @@ public final class CommandRouter {
     private CommandRouter() {}
 
     public static void handleCommand(ClientHandler client, String input) {
-
-       // ParsedCommand cmd = parse(input);
-
+        ParsedCommand cmd = parse(input);
         switch (cmd.name()) {
             case "help"   -> cmdHelp(client);
             case "msg"    -> cmdMsg(client, cmd.arg());
@@ -41,23 +39,29 @@ public final class CommandRouter {
     }
 
     private static void cmdList(ClientHandler client) {
-        // TODO
+        //format: ["r1", "r2",....]
+        client.send(RoomManager.ROOM_MANAGER.listRoomNames().toString());
     }
 
     private static void cmdCreate(ClientHandler client, String room) {
-        // TODO
+        client.send(RoomManager.ROOM_MANAGER.createRoom(room) ? "Room created" : "Could not create room");
+        cmdJoin(client, room);
     }
 
     private static void cmdJoin(ClientHandler client, String room) {
-        // TODO
+        client.send(RoomManager.ROOM_MANAGER.joinRoom(client, room) ? "Joined room" : "Could not join room");
     }
 
     private static void cmdLeave(ClientHandler client) {
-        // TODO
+        if (RoomManager.ROOM_MANAGER.joinRoom(client, RoomManager.LOBBY_ROOM_NAME)){
+            client.send("Back in lobby");
+        } else {
+            client.send("Already in lobby");
+        }
     }
 
     private static void cmdWhere(ClientHandler client) {
-        // TODO
+        client.send(RoomManager.ROOM_MANAGER.getCurrentRoom(client));
     }
 
     private static void cmdQuit(ClientHandler client) {
@@ -65,7 +69,22 @@ public final class CommandRouter {
     }
 
     private static void cmdUnknown(ClientHandler client, String cmd) {
-        // TODO
+       client.send("Unknown command, type /help for reference");
     }
 
+    private static ParsedCommand parse(String line){
+        String trimmed = line.trim();
+
+        int space = trimmed.indexOf(' ');
+        if (space < 0){
+            return new ParsedCommand(trimmed.substring(1).toLowerCase(), null);
+        }
+
+        String name = trimmed.substring(1, space).toLowerCase();
+        String args = trimmed.substring(space + 1);
+        if (args.isEmpty()) args = null;
+        return new ParsedCommand(name, args);
+    }
+
+    private record ParsedCommand(String name, String arg){}
 }
