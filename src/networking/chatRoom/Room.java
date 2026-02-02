@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Room {
-//    int capacity;
+//    int capacity; // future possibility
     private String name;
     private final boolean isLobby;
     private final Set<ClientHandler> members = ConcurrentHashMap.newKeySet();

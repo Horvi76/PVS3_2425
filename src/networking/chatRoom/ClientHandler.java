@@ -1,8 +1,8 @@
 package networking.chatRoom;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class ClientHandler extends Thread{
     Socket clientSocket;
@@ -18,7 +18,19 @@ public class ClientHandler extends Thread{
 
     @Override
     public void run() {
-        // TODO: 23.01.2026 Komunikace s klientem
+        try {
+            out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()),true);
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+            out.println("Successful connect");
+            RoomManager.ROOM_MANAGER.joinLobby(this);
+
+
+        } catch (IOException e) {
+            System.out.println("Disconnected: " + clientID + " (" + e.getMessage() + ")");
+        }finally {
+            out.close();
+        }
     }
 
 
