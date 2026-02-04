@@ -35,7 +35,7 @@ public final class CommandRouter {
     }
 
     private static void cmdMsg(ClientHandler client, String text) {
-        // TODO: broadcast message to current room
+        RoomManager.ROOM_MANAGER.roomCast(client, text);
     }
 
     private static void cmdList(ClientHandler client) {

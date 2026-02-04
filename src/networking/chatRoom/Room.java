@@ -23,11 +23,15 @@ public class Room {
     }
 
     public void addMember(ClientHandler session){
-        members.add(session);
+        if (members.add(session))
+            broadCastChat("SYS_INFO", session.getClientID() + " se pripojil");
+        System.out.println("Pocet klientu v room je " + members.size());
     }
 
     public void removeMember(ClientHandler session){
-        members.remove(session);
+        if (members.remove(session))
+            broadCastChat("SYS_INFO", session.getClientID() + " se odpojil");
+        System.out.println("Pocet klientu v room je " + members.size());
     }
 
     public boolean isEmpty(){
