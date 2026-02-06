@@ -44,7 +44,7 @@ public final class CommandRouter {
     }
 
     private static void cmdCreate(ClientHandler client, String room) {
-        client.send(RoomManager.ROOM_MANAGER.createRoom(room) ? "Room created" : "Could not create room");
+        client.send (RoomManager.ROOM_MANAGER.createRoom(room) ? "Room created" : "Could not create room");
         cmdJoin(client, room);
     }
 
