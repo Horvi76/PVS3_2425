@@ -15,7 +15,12 @@ public class RoomManager {
     private final ConcurrentMap<ClientHandler, Room> membership = new ConcurrentHashMap<>();
 
     private RoomManager(){
+        rooms.put(LOBBY_ROOM_NAME, lobby);
+    }
 
+    public void roomCast(ClientHandler client, String message){
+        Room clientRoom = rooms.get(getCurrentRoom(client));
+        clientRoom.broadCastChat(client.getClientID(), message);
     }
 
     public boolean createRoom(String roomName){
@@ -35,8 +40,11 @@ public class RoomManager {
 
     public boolean joinRoom(ClientHandler who, String where){
         Room toJoin = rooms.get(where);
+        who.send("Pripojuji k " + toJoin.getName());
         //chce jit ze stejne room do stejne
         Room current = membership.get(who);
+        who.send("Odpojuji z " + current.getName());
+
         if (toJoin == null || toJoin.equals(current))
             return false;
 
