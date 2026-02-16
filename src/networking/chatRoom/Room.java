@@ -1,5 +1,7 @@
 package networking.chatRoom;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,6 +14,10 @@ public class Room {
     public Room(String name, boolean isLobby) {
         this.name = name;
         this.isLobby = isLobby;
+    }
+
+    public List<ClientHandler> getMembers() {
+        return new ArrayList<>(members);
     }
 
     public String getName() {

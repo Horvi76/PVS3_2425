@@ -11,7 +11,7 @@ public class RoomManager {
 
     private final Room lobby = new Room(LOBBY_ROOM_NAME, true);
     //seznam vsech rooms
-    private final ConcurrentMap<String, Room> rooms = new ConcurrentHashMap<>();
+    public final ConcurrentMap<String, Room> rooms = new ConcurrentHashMap<>();
     private final ConcurrentMap<ClientHandler, Room> membership = new ConcurrentHashMap<>();
 
     private RoomManager(){
@@ -40,14 +40,14 @@ public class RoomManager {
 
     public boolean joinRoom(ClientHandler who, String where){
         Room toJoin = rooms.get(where);
-        who.send("Pripojuji k " + toJoin.getName());
-        //chce jit ze stejne room do stejne
         Room current = membership.get(who);
-        who.send("Odpojuji z " + current.getName());
-
         if (toJoin == null || toJoin.equals(current))
             return false;
 
+        who.send("Pripojuji k " + toJoin.getName());
+        who.send("Odpojuji z " + current.getName());
+
+        membership.replace(who, toJoin);
         toJoin.addMember(who);
         current.removeMember(who);
 

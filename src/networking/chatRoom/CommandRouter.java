@@ -2,20 +2,22 @@ package networking.chatRoom;
 
 public final class CommandRouter {
 
-    private CommandRouter() {}
+    private CommandRouter() {
+    }
 
     public static void handleCommand(ClientHandler client, String input) {
         ParsedCommand cmd = parse(input);
         switch (cmd.name()) {
-            case "help"   -> cmdHelp(client);
-            case "msg"    -> cmdMsg(client, cmd.arg());
-            case "list"   -> cmdList(client);
+            case "help" -> cmdHelp(client);
+            case "msg" -> cmdMsg(client, cmd.arg());
+            case "list" -> cmdList(client);
             case "create" -> cmdCreate(client, cmd.arg());
-            case "join"   -> cmdJoin(client, cmd.arg());
-            case "leave"  -> cmdLeave(client);
-            case "where"  -> cmdWhere(client);
-            case "quit"   -> cmdQuit(client);
-            default       -> cmdUnknown(client, cmd.name());
+            case "join" -> cmdJoin(client, cmd.arg());
+            case "leave" -> cmdLeave(client);
+            case "where" -> cmdWhere(client);
+            case "members" -> cmdMembers(client);
+            case "quit" -> cmdQuit(client);
+            default -> cmdUnknown(client, cmd.name());
         }
     }
 
@@ -28,6 +30,7 @@ public final class CommandRouter {
         client.send("  /join <room>       - join an existing room");
         client.send("  /leave             - leave current room and return to lobby");
         client.send("  /where             - show current room");
+        client.send("  /members           - lists member names in current room");
         client.send("  /quit              - disconnect");
         client.send("");
         client.send("Notes:");
@@ -44,8 +47,12 @@ public final class CommandRouter {
     }
 
     private static void cmdCreate(ClientHandler client, String room) {
-        client.send(RoomManager.ROOM_MANAGER.createRoom(room) ? "Room created" : "Could not create room");
-        cmdJoin(client, room);
+        if (RoomManager.ROOM_MANAGER.createRoom(room)) {
+            client.send("Room created");
+            cmdJoin(client, room);
+        } else {
+            client.send("Could not create room");
+        }
     }
 
     private static void cmdJoin(ClientHandler client, String room) {
@@ -53,15 +60,26 @@ public final class CommandRouter {
     }
 
     private static void cmdLeave(ClientHandler client) {
-        if (RoomManager.ROOM_MANAGER.joinRoom(client, RoomManager.LOBBY_ROOM_NAME)){
+        if (RoomManager.ROOM_MANAGER.joinRoom(client, RoomManager.LOBBY_ROOM_NAME)) {
             client.send("Back in lobby");
         } else {
             client.send("Already in lobby");
         }
     }
 
+
+
     private static void cmdWhere(ClientHandler client) {
         client.send(RoomManager.ROOM_MANAGER.getCurrentRoom(client));
+    }
+
+
+    private static void cmdMembers(ClientHandler client) {
+        client.send(
+                RoomManager.ROOM_MANAGER.rooms.get(
+                RoomManager.ROOM_MANAGER.getCurrentRoom(client))//string room
+                        .getMembers().toString()
+        );
     }
 
     private static void cmdQuit(ClientHandler client) {
@@ -69,14 +87,14 @@ public final class CommandRouter {
     }
 
     private static void cmdUnknown(ClientHandler client, String cmd) {
-       client.send("Unknown command, type /help for reference");
+        client.send("Unknown command, type /help for reference");
     }
 
-    private static ParsedCommand parse(String line){
+    private static ParsedCommand parse(String line) {
         String trimmed = line.trim();
 
         int space = trimmed.indexOf(' ');
-        if (space < 0){
+        if (space < 0) {
             return new ParsedCommand(trimmed.substring(1).toLowerCase(), null);
         }
 
@@ -86,5 +104,6 @@ public final class CommandRouter {
         return new ParsedCommand(name, args);
     }
 
-    private record ParsedCommand(String name, String arg){}
+    private record ParsedCommand(String name, String arg) {
+    }
 }
