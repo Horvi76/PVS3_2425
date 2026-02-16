@@ -24,7 +24,8 @@ public class CalcServer {
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
             ) {
-            Point p =(Point) in.readObject();
+
+            Point p = (Point) in.readObject();
 
             String quadrant = getQuadrant(p);
             double distance = Math.sqrt(p.x() * p.x() + p.y()* p.y());

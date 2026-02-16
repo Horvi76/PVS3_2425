@@ -1,0 +1,8 @@
+Vytvorit OrderClient
+
+Order server zpracuje objednanku:
+Objednavka ma itemName a mnozstvi
+
+Response:
+a)"itemname", cena (mnozstvi * cena za kus)
+b) "ERROR: nenalezeno, <1 mnozstvi...", cena = 0;

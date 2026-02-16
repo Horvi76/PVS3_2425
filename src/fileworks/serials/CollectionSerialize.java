@@ -20,6 +20,7 @@ public class CollectionSerialize {
 
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("coordsList.ser"));
         oos.writeObject(coordinates);
+
         oos.close();
 
         List<Coordinates> deserializedCoordinates = null;
