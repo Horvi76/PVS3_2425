@@ -6,3 +6,5 @@ Objednavka ma itemName a mnozstvi
 Response:
 a)"itemname", cena (mnozstvi * cena za kus)
 b) "ERROR: nenalezeno, <1 mnozstvi...", cena = 0;
+
+https://forms.office.com/Pages/ResponsePage.aspx?id=f_BDFfkwekCetYp67EGP_1pSNPXTVBFPg7PGychWGEdURDFZRVM5NUE4U09HOUVEMzRGME9STFpSWSQlQCNjPTEu
