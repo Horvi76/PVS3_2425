@@ -7,9 +7,9 @@ import java.util.UUID;
 public final class StateRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public final UUID requestId;
+    public final int requestId;
 
-    public StateRequest(UUID requestId) {
+    public StateRequest(int requestId) {
         this.requestId = requestId;
    }
 }
