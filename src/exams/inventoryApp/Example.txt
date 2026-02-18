@@ -14,4 +14,4 @@ Co muze poslat klient:
 
 todo:
 Clinet - pripoj se a neustale se ptej, co delat (Order_PUT, ORDER_TAKE, list inventory)
-Server - Eviduje invetory, posloucha vstupy od klientu, na zaklade requestu da response
+Server - Eviduje invetory, posloucha vstupy od klientu, na zaklade requestu da response nebo neco udela s inventory
