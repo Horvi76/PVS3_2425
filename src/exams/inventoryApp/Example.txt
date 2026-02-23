@@ -1,0 +1,17 @@
+Comms: Server posloucha, klient se pripojuje.
+
+Na serveru je promenna invetntar: Map<String, Integer> (jmeno zbozi, pocet kusu).
+
+Co muze poslat klient:
+1) Order (PUT/TAKE, jmeno, pocetKusu)
+	a)PUT:  do inventare pridej pocetKusu ke klici jmeno
+	
+	b)TAKE: z inventare odeber pocetKusu u klice jmeno
+		..ohlidat, zda vubec mozne nebo neni zaporne
+
+2) StateRequest - klient zada videt stav inventare
+...server vraci StateResponse(), serializovany cely inventar
+
+todo:
+Clinet - pripoj se a neustale se ptej, co delat (Order_PUT, ORDER_TAKE, list inventory)
+Server - Eviduje invetory, posloucha vstupy od klientu, na zaklade requestu da response nebo neco udela s inventory
