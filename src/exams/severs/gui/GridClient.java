@@ -1,4 +1,5 @@
 package exams.severs.gui;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -52,7 +53,9 @@ public class GridClient {
         controls.add(reserveButton);
 
         reserveButton.addActionListener(e -> {
-            //todo - poslat tlacitku instrukci
+            int r = parseField(rowField.getText());
+            int c = parseField(colField.getText());
+            sendReserve(r, c);
         });
 
         frame.setLayout(new BorderLayout());
@@ -67,7 +70,11 @@ public class GridClient {
     }
 
     private int parseField(String s) {
-        try { return Integer.parseInt(s.trim()); } catch (Exception e) { return -1; }
+        try {
+            return Integer.parseInt(s.trim());
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
     private void connect() {
@@ -76,7 +83,7 @@ public class GridClient {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
 
-            //todo - novy thread a zacni poslouchat
+            new Thread(this::listenLoop, "server-listener").start();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null,
                     "Could not connect to server at " + HOST + ":" + PORT + "\n" + ex.getMessage(),
@@ -92,10 +99,18 @@ public class GridClient {
             while ((line = in.readLine()) != null) {
                 line = line.trim();
 
+                //tady aktualizuju stav
                 if (line.startsWith("RESERVED")) {
-                    //todo
+                    String[] parts = line.split("\\s+");
+                    int r = Integer.parseInt(parts[1]);
+                    int c = Integer.parseInt(parts[2]);
+
+                    SwingUtilities.invokeLater(() -> markReserved(r, c));
                 } else if (line.startsWith("ERROR")) {
-                    //todo
+                    String errLine = line;
+                    SwingUtilities.invokeLater(() ->
+                            JOptionPane.showMessageDialog(null, errLine, "Error", JOptionPane.WARNING_MESSAGE)
+                    );
                 }
             }
         } catch (IOException | NumberFormatException ex) {
@@ -111,12 +126,12 @@ public class GridClient {
         }
     }
 
+
     private void sendReserve(int r, int c) {
         if (out == null) return;
 
-        //overte, ze souradnice jsou ok
-        if (true) {
-            JOptionPane.showMessageDialog(null, "Souradnice musi byt 0..9", "Input error", JOptionPane.ERROR_MESSAGE);
+        if (r < 0 || r >= SIZE || c < 0 || c >= SIZE) {
+            JOptionPane.showMessageDialog(null, "Row/Col must be 0..9", "Input error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -143,6 +158,9 @@ public class GridClient {
     }
 
     private void closeQuietly() {
-        try { if (socket != null) socket.close(); } catch (IOException ignored) {}
+        try {
+            if (socket != null) socket.close();
+        } catch (IOException ignored) {
+        }
     }
 }

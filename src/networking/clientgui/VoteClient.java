@@ -73,7 +73,7 @@ public class VoteClient {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
 
-            //tady zacinu gui multithread
+            //tady zacnu gui multithread
             new Thread(this::listenLoop, "server-listener").start();
 
         } catch (IOException ex) {

@@ -35,7 +35,7 @@ public class GridServer {
             out = pw;
             clientOutputs.add(out);
 
-            sendFullState(out);
+            sendFullState(out);;
 
             String line;
             while ((line = in.readLine()) != null) {
