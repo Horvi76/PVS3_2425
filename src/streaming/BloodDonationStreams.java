@@ -10,6 +10,25 @@ public class BloodDonationStreams {
         List<BloodDonation> donations = BloodDonation.generateSampleDonations(100);
         donations.forEach(System.out::println);
 
+      double avg =  donations.stream()
+                .filter(b -> b.getDonationType().equals("Plasma"))
+                .mapToDouble(BloodDonation::getAmountMl)
+                .average()
+                .orElse(0);
+
+      long count = donations.stream()
+              .filter(b -> b.getDonorId().equals("D003"))
+              .count();
+
+      //3 nejvetsi darovani
+        donations.stream()
+                .sorted((b1, b2) -> b1.getAmountMl() - b2.getAmountMl())
+                .limit(3)
+                .forEach(System.out::println);
+
+        //mapa vsech darovani dle typu
+        donations.stream()
+                .collect(Collectors.groupingBy(BloodDonation::getDonationType));
     }
 }
 
